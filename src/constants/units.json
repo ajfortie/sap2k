@@ -1,0 +1,18 @@
+{
+    "lb, in": 1,
+    "lb, ft": 2,
+    "kip, in": 3,
+    "kip, ft": 4,
+    "kN, mm": 5,
+    "kN, m": 6,
+    "kgf, mm": 7,
+    "kgf, m": 8,
+    "N, mm": 9,
+    "N, m": 10,
+    "Ton, mm": 11,
+    "Ton, m": 12,
+    "kN, cm": 13,
+    "kgf, cm": 14,
+    "N, cm": 15,
+    "Ton, cm": 16
+}
