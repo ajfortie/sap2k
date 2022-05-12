@@ -2,7 +2,10 @@
 # This Module contains functions which extract frame results from a given
 # SAP2000 Model
 
+from asyncio.windows_events import NULL
+import string
 import sys
+import json
 
 def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
     # This function will extract the Area Joint Forces for the given load cases,
@@ -44,6 +47,20 @@ def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVC
     #       14  = kgf, cm, C
     #       15  = N, cm, C
     #       16  = Ton, cm, C
+
+    f=open("..\\constants\\units.json","r")
+    unit_dict = json.load(f)
+    f.close()
+    print(unit_dict)
+
+    if isinstance(Units, str):
+        Units = unit_dict[Units]
+    elif isinstance(Units, int):
+        Units = Units
+    else:
+        raise TypeError("Value of Units variable must be string or integer. \
+Reference the Units.json file in the constants directory for list \
+of valid units.")
 
     ret=0
     NumberResults = 0
