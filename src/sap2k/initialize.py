@@ -5,7 +5,7 @@ import sys
 
 import comtypes.client
 
-def SAPModel(Version, AttachToInstance = False):
+def SAPModel(Version, AttachToInstance=False, Visible=True, Path=""):
     # This function will
     # Define the paths to different versions of SAP2000
     VersionPaths = ["",""]
@@ -49,6 +49,9 @@ def SAPModel(Version, AttachToInstance = False):
 
             mySapObject = helper.CreateObject(Prog_Path)
 
+            # Start Sap2000 Application
+            mySapObject.applicationstart(Visible=Visible,FileName=Path)
+
         except (OSError, comtypes.COMError):
 
             print("Cannot start a new instance of the program from " + Prog_Path)
@@ -56,6 +59,7 @@ def SAPModel(Version, AttachToInstance = False):
             sys.exit(-1)
 
         #start SAP2000 application
+
 
     return mySapObject
 
