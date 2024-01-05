@@ -1,23 +1,23 @@
 ##SAP2000 Interface module.
 import os
-
 import sys
 
 import comtypes.client
 
+
+
+
 def SAPModel(Version, AttachToInstance=False, Visible=True, Path=""):
-    # This function will
-    # Define the paths to different versions of SAP2000
-    VersionPaths = ["",""]
-    VersionPaths[0] = "C:\\Program Files\\Computers and Structures\\SAP2000 21\\SAP2000.exe"
-    VersionPaths[1] = "C:\\Program Files\\Computers and Structures\\SAP2000 22\\SAP2000.exe"
+    # This function will Find the installed versions of SAP
+    installed_versions = {}
+    for items in os.listdir("C:\\Program Files\\Computers and Structures\\"):
+        if items.find("SAP2000") != -1:
+            key = items.removeprefix("SAP2000 ")
+            installed_versions[key] = items
 
     #Process Version Number
-    if (Version == "V21") or (Version == "v21"):
-        Prog_Path = VersionPaths[0]
-
-    elif (Version =="V22") or (Version == "v22"):
-        Prog_Path = VersionPaths[1]
+    if Version in installed_versions:
+        Prog_Path = "C:\\Program Files\\Computers and Structures\\" + installed_versions[Version] + "\\SAP2000.exe"
 
     if AttachToInstance:
 
