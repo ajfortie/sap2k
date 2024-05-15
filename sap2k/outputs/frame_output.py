@@ -3,6 +3,8 @@
 # SAP2000 Model
 
 from asyncio.windows_events import NULL
+from ..constants import units, sap_paths
+
 import string
 import sys
 import json
@@ -118,7 +120,7 @@ of valid units.")
 
 def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=3):
     # This function will extract the Area Joint Forces for the given load cases,
-    # and groups.
+    # and groups. output is a list of tuples of the resulting forces.
 
     # Variable Definitions:
     #   Model       = SAP Model object defined initialized using SAP2000v22 (Object)
