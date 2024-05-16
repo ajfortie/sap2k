@@ -68,7 +68,7 @@ of valid units.")
     for grp in Groups:
         ret = Model.SelectObj.Group(grp)
     
-    output = Model.Results.JointReact(ItemTypeElem=3)
+    output = Model.Results.JointReact("",ItemTypeElem=3)
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
