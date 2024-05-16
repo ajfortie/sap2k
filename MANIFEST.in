@@ -1,1 +1,1 @@
-graft sap2k\constants
+include sap2k/constants/*
