@@ -1,1 +1,1 @@
-include sap2k/constants/*.json
+include sap2k/constants*.json
