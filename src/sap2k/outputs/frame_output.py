@@ -7,7 +7,7 @@ from ..constants import units
 
 import sys
 
-def FrameJtForces(Model=object, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
+def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
     """This function will extract the Frame Joint Forces for the given load cases,
     and groups.
 
