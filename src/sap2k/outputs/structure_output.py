@@ -61,7 +61,7 @@ of valid units.")
     
     result_setup(Model, LoadCases, Units, NLStatic, MSStatic, MVCombo)
 
-    output = Model.SapModel.Results.BaseReact()
+    output = Model.Results.BaseReact()
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
