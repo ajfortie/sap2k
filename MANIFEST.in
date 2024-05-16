@@ -1,1 +1,1 @@
-include sap2k/constants*.json
+graft sap2k\constants
