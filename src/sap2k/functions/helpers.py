@@ -25,7 +25,7 @@ of valid units.")
 
     # Set Load Cases For Output
     print(load_cases)
-    if type(load_cases) != None:
+    if load_cases != None:
         model.results.Setup.DeselectAllCasesAndCombosForOutput()
         for itm in load_cases:
             ret = model.Results.Setup.setCaseSelectedForOutput(itm)
