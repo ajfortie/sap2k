@@ -10,7 +10,7 @@ def StartDesign(model):
     if design_status:
         return
     else:
-        model.DesignSteel.StartDesign
+        model.DesignSteel.StartDesign()
 
 
 def GetSummaryResults(model, groups=list|None, Units=4):
