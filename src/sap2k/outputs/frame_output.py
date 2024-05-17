@@ -2,7 +2,6 @@
 # This Module contains functions which extract frame results from a given
 # SAP2000 Model
 
-from asyncio.windows_events import NULL
 from ..constants import units
 
 import sys
@@ -58,23 +57,6 @@ Reference the Units.json file in the constants directory for list \
 of valid units.")
 
     ret=0
-    NumberResults = 0
-    Obj = []
-    Elm = []
-    PointElm =[]
-    LoadCase = []
-    StepType = []
-    StepNum = []
-    F1 = []
-    F2 = []
-    F3 = []
-    M1 = []
-    M2 = []
-    M3 = []
-    Xcoord = []
-    Ycoord = []
-    Zcoord = []
-    Results = []
     FldNms = ['FieldNames','NumberResults','Obj','Elm','PointElm','LoadCase','StepType','StepNum',
               'F1','F2','F3','M1','M2','M3','Xcoord','Ycoord','Zcoord']
 
@@ -95,21 +77,29 @@ of valid units.")
 
     # Select all objects in specified groups
     Model.SelectObj.Group("All",True)
+    ret = Model.SelectObj.ClearSelection()
     for i, item in enumerate(Groups):
-        ret = Model.SelectObj.ClearSelection()
         ret = Model.SelectObj.Group(item)
 
         # Loop through each selection group
+    
+    output = Model.Results.FrameJointForce("",3)
+    output_dict = {}
 
-        [NumberResults,Obj,Elm,PointElm,LoadCase,StepType,StepNum,F1,F2,F3,M1,M2,M3,ret] = Model.Results.FrameJointForce("",3)
+    for i, fldnm in enumerate(FldNms):
+        output_dict[fldnm] = output[i]
+    
+    output_dict["Xcoord"] = []
+    output_dict["Ycoord"] = []
+    output_dict["Ycoord"] = []
 
-    for i in range(NumberResults):
-        [X,Y,Z,T] = Model.PointElm.GetCoordCartesian(PointElm[i])
-        Xcoord.append(X)
-        Ycoord.append(Y)
-        Zcoord.append(Z)
+    for elem in output_dict["PointElem"]:
+        [X,Y,Z,T] = Model.PointElm.GetCoordCartesian(elem)
+        output_dict["Xcoord"].append(X)
+        output_dict["ycoord"].append(Y)
+        output_dict["Zcoord"].append(Z)
 
-    return [FldNms,NumberResults,Obj,Elm,PointElm,LoadCase,StepType,StepNum,F1,F2,F3,M1,M2,M3,Xcoord,Ycoord,Zcoord]
+    return output_dict
 
 def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=3):
     # This function will extract the Area Joint Forces for the given load cases,

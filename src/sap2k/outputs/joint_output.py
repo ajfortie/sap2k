@@ -4,7 +4,7 @@
 
 from asyncio.windows_events import NULL
 from ..constants import units
-from ..functions.helpers import result_setup
+from ..functions.helpers import result_setup, select_groups
 
 import pandas as pd
 import sys
@@ -53,24 +53,17 @@ def JointReact(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVComb
     FldNms = ['NumberResults','Obj', 'Elm', 'LoadCase','StepType','StepNum', 'F1','F2','F3',
               'M1','M2','M3']
     
-    if isinstance(Units, str):
-        Units = units[Units]
-    elif isinstance(Units, int):
-        Units = Units
-    else:
-        raise TypeError("Value of Units variable must be string or integer. \
-Reference the Units.json file in the constants directory for list \
-of valid units.")
-    
+    #Prepare the Model for Output
     result_setup(Model, LoadCases, Units, NLStatic, MSStatic, MVCombo)
 
-    ret = Model.SelectObj.ClearSelection()
-    for grp in Groups:
-        ret = Model.SelectObj.Group(grp)
+    # Select elements in groups
+    select_groups(Model, Groups)
     
+    # Retrieve Joint Reactions
     output = Model.Results.JointReact("",3)
+    
+    # Convert output into a dictionary
     output_dict = {}
-
     for i, fldnm in enumerate(FldNms):
         output_dict[fldnm] = output[i]
 
