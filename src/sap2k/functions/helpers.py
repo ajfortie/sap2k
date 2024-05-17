@@ -24,6 +24,7 @@ of valid units.")
     model.Results.Setup.SetOptionMultiValuedCombo(MVCombo)
 
     # Set Load Cases For Output
+    print(type(load_cases))
     if type(load_cases) != None:
         model.results.Setup.DeselectAllCasesAndCombosForOutput()
         for itm in load_cases:
