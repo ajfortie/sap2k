@@ -24,11 +24,12 @@ of valid units.")
     model.Results.Setup.SetOptionMultiValuedCombo(MVCombo)
 
     # Set Load Cases For Output
-    model.results.Setup.DeselectAllCasesAndCombosForOutput()
-    for itm in load_cases:
-        ret = model.Results.Setup.setCaseSelectedForOutput(itm)
-        if ret != 0:
-            ret = model.Results.Setup.setComboSelectedForOutput(itm)
+    if type(load_cases) != None:
+        model.results.Setup.DeselectAllCasesAndCombosForOutput()
+        for itm in load_cases:
+            ret = model.Results.Setup.setCaseSelectedForOutput(itm)
+            if ret != 0:
+                ret = model.Results.Setup.setComboSelectedForOutput(itm)
 
 def select_groups(model,groups=list):
 
