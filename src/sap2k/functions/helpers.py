@@ -1,6 +1,6 @@
 from ..constants import units
 
-def result_setup(model, load_cases=list|None, Units=4, NLStatic=1, MSStatic=1,
+def result_setup(model, load_cases=None, Units=4, NLStatic=1, MSStatic=1,
                   MVCombo=1):
     """
     This function takes the specified output parameters and prepares the model
