@@ -120,7 +120,7 @@ def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCom
     """
 
     FldNms = ['NumberResults','Obj','ObjSta','Elm','ElmSta','LoadCase','StepType','StepNum',
-              'P','V2','V3','T','M2','M3','Xcoord','Ycoord','Zcoord']
+              'P','V2','V3','T','M2','M3']
 
     ret = result_setup(model=Model,load_cases=LoadCases,Units=Units,
                        NLStatic=NLStatic,MSStatic=MSStatic,MVCombo=MVCombo)
