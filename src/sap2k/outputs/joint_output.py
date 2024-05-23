@@ -2,12 +2,9 @@
 # This Module contains functions which extract joint results from a given
 # SAP2000 Model
 
-from asyncio.windows_events import NULL
 from ..constants import units
 from ..functions.helpers import result_setup, select_groups
 
-import pandas as pd
-import sys
 
 def JointReact(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
     """This function will extract the Joint Reactions for the given load cases,

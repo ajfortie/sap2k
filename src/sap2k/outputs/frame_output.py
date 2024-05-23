@@ -3,6 +3,7 @@
 # SAP2000 Model
 
 from ..constants import units
+from ..functions.helpers import select_groups, result_setup
 
 import sys
 
@@ -47,41 +48,15 @@ def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVC
           15  = N, cm, C
           16  = Ton, cm, C """
 
-    if isinstance(Units, str):
-        Units = units[Units]
-    elif isinstance(Units, int):
-        Units = Units
-    else:
-        raise TypeError("Value of Units variable must be string or integer. \
-Reference the Units.json file in the constants directory for list \
-of valid units.")
-
     ret=0
-    FldNms = ['FieldNames','NumberResults','Obj','Elm','PointElm','LoadCase','StepType','StepNum',
+    FldNms = ['NumberResults','Obj','Elm','PointElm','LoadCase','StepType','StepNum',
               'F1','F2','F3','M1','M2','M3','Xcoord','Ycoord','Zcoord']
 
-    # Set Units
-    Model.SetPresentUnits(Units)
-
-    # Set Result Options
-    Model.Results.Setup.SetOptionNLStatic(NLStatic)
-    Model.Results.Setup.SetOptionMultiStepStatic(MSStatic)
-    Model.Results.Setup.SetOptionMultiValuedCombo(MVCombo)
-
-    # Set Load Cases For Output
-    Model.results.Setup.DeselectAllCasesAndCombosForOutput()
-    for i, item in enumerate(LoadCases):
-        ret = Model.Results.Setup.setCaseSelectedForOutput(item)
-        if ret != 0:
-            ret = Model.Results.Setup.setComboSelectedForOutput(item)
+    ret = result_setup(model=Model,load_cases=LoadCases,Units=Units,
+                       NLStatic=NLStatic,MSStatic=MSStatic,MVCombo=MVCombo)
 
     # Select all objects in specified groups
-    Model.SelectObj.Group("All",True)
-    ret = Model.SelectObj.ClearSelection()
-    for i, item in enumerate(Groups):
-        ret = Model.SelectObj.Group(item)
-
-        # Loop through each selection group
+    ret = select_groups(model=Model,groups=Groups)
     
     output = Model.Results.FrameJointForce("",3)
     output_dict = {}
@@ -91,111 +66,75 @@ of valid units.")
     
     output_dict["Xcoord"] = []
     output_dict["Ycoord"] = []
-    output_dict["Ycoord"] = []
+    output_dict["Zcoord"] = []
 
     for elem in output_dict["PointElem"]:
         [X,Y,Z,T] = Model.PointElm.GetCoordCartesian(elem)
         output_dict["Xcoord"].append(X)
-        output_dict["ycoord"].append(Y)
+        output_dict["Ycoord"].append(Y)
         output_dict["Zcoord"].append(Z)
 
     return output_dict
 
 def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=3):
-    # This function will extract the Area Joint Forces for the given load cases,
-    # and groups. output is a list of tuples of the resulting forces.
+    """
+    This function will extract the Area Joint Forces for the given load cases,
+    and groups. output is a list of tuples of the resulting forces.
 
-    # Variable Definitions:
-    #   Model       = SAP Model object defined initialized using SAP2000v22 (Object)
-    #   LoadCases   = List of load cases for inclusion in output (Strings)
-    #   Groups      = List of selection groups for inclusion in output (Strings)
-    #   Results     = List of result data extracted from the SAP2000 Model
-    #       Results[0]  = Field Names
-    #       Results[1]  = Number of Results
-    #   NLStatic    = Set output type for Nonlinear Static Results:
-    #       1   = Envelopes (Default)
-    #       2   = Step-by-Step
-    #       3   = Last Step
-    #   MSStatic    = Set output type for Multi-Step Static Results:
-    #       1   = Envelopes (Default)
-    #       2   = Step-by-Step
-    #       3   = Last Step
-    #   MVCombo     = Set output type for Multi-Valued Combonations:
-    #       1   = Envelope (Default)
-    #       2   = Multiple Values, if possible
-    #       3   = Correspondence
-    #   Units       = Set output units for results
-    #       1   = lb, in, F
-    #       2   = lb, ft, F
-    #       3   = kip, in, F
-    #       4   = kip, ft, F (Default)
-    #       5   = kN, mm, C
-    #       6   = kN, m, C
-    #       7   = kgf, mm, C
-    #       8   = kgf, m, C
-    #       9   = N, mm, C
-    #       10  = N, m, C
-    #       11  = Ton, mm, C
-    #       12  = Ton, m, C
-    #       13  = kN, cm, C
-    #       14  = kgf, cm, C
-    #       15  = N, cm, C
-    #       16  = Ton, cm, C
+    Variable Definitions:
+      Model       = SAP Model object defined initialized using SAP2000v22 (Object)
+      LoadCases   = List of load cases for inclusion in output (Strings)
+      Groups      = List of selection groups for inclusion in output (Strings)
+      Results     = List of result data extracted from the SAP2000 Model
+          Results[0]  = Field Names
+          Results[1]  = Number of Results
+      NLStatic    = Set output type for Nonlinear Static Results:
+          1   = Envelopes (Default)
+          2   = Step-by-Step
+          3   = Last Step
+      MSStatic    = Set output type for Multi-Step Static Results:
+          1   = Envelopes (Default)
+          2   = Step-by-Step
+          3   = Last Step
+      MVCombo     = Set output type for Multi-Valued Combonations:
+          1   = Envelope (Default)
+          2   = Multiple Values, if possible
+          3   = Correspondence
+      Units       = Set output units for results
+          1   = lb, in, F
+          2   = lb, ft, F
+          3   = kip, in, F
+          4   = kip, ft, F (Default)
+          5   = kN, mm, C
+          6   = kN, m, C
+          7   = kgf, mm, C
+          8   = kgf, m, C
+          9   = N, mm, C
+          10  = N, m, C
+          11  = Ton, mm, C
+          12  = Ton, m, C
+          13  = kN, cm, C
+          14  = kgf, cm, C
+          15  = N, cm, C
+          16  = Ton, cm, C 
+    """
 
-    ret=0
-    NumberResults = 0
-    Obj = []
-    ObjSta = []
-    Elm = []
-    ElmSta =[]
-    LoadCase = []
-    StepType = []
-    StepNum = []
-    P = []
-    V2 = []
-    V3 = []
-    T = []
-    M2 = []
-    M3 = []
-    Xcoord = []
-    Ycoord = []
-    Zcoord = []
-    Results = []
-    FldNms = ['FieldNames','NumberResults','Obj','ObjSta','Elm','ElmSta','LoadCase','StepType','StepNum',
+    FldNms = ['NumberResults','Obj','ObjSta','Elm','ElmSta','LoadCase','StepType','StepNum',
               'P','V2','V3','T','M2','M3','Xcoord','Ycoord','Zcoord']
 
-    # Set Units
-    Model.SetPresentUnits(Units)
-
-    # Set Result Options
-    Model.Results.Setup.SetOptionNLStatic(NLStatic)
-    Model.Results.Setup.SetOptionMultiStepStatic(MSStatic)
-    Model.Results.Setup.SetOptionMultiValuedCombo(MVCombo)
-
-    # Set Load Cases For Output
-    Model.results.Setup.DeselectAllCasesAndCombosForOutput()
-    for i, item in enumerate(LoadCases):
-        ret = Model.Results.Setup.setCaseSelectedForOutput(item)
-        if ret != 0:
-            ret = Model.Results.Setup.setComboSelectedForOutput(item)
+    ret = result_setup(model=Model,load_cases=LoadCases,Units=Units,
+                       NLStatic=NLStatic,MSStatic=MSStatic,MVCombo=MVCombo)
 
     # Select all objects in specified groups
-    Model.SelectObj.Group("All",True)
-    for i, item in enumerate(Groups):
-        ret = Model.SelectObj.ClearSelection()
-        ret = Model.SelectObj.Group(item)
+    ret = select_groups(model=Model,groups=Groups)
+       
+    output = Model.Results.FrameForce("",3)
+    output_dict = {}
 
-        # Loop through each selection group
+    for i, fldnm in enumerate(FldNms):
+        output_dict[fldnm] = output[i]
 
-        [NumberResults,Obj,ObjSta,Elm,ElmSta,LoadCase,StepType,StepNum,P,V2,V3,T,M2,M3,ret] = Model.Results.FrameForce("",3)
-
-    # for i in range(NumberResults):
-    #     [X,Y,Z,Temp] = Model.PointElm.GetCoordCartesian(PointElm[i])
-    #     Xcoord.append(X)
-    #     Ycoord.append(Y)
-    #     Zcoord.append(Z)
-
-    return [FldNms,NumberResults,Obj,ObjSta,Elm,ElmSta,LoadCase,StepType,StepNum,P,V2,V3,T,M2,M3]
+    return output_dict
 
 def FrameElmSort(Model,Groups):
     ret=0

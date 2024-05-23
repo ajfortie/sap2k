@@ -11,6 +11,7 @@ def StartDesign(model):
         return
     else:
         model.DesignSteel.StartDesign()
+        model.File.Save()
 
 
 def GetSummaryResults(model, groups=list|None, Units=4):
