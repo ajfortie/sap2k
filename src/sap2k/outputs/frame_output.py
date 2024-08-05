@@ -139,11 +139,6 @@ def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCom
     output = Model.Results.FrameForce("",3)
     output_dict = dict(zip(FldNms,output))
 
-    for obj in output_dict['Obj']:
-        for grp in grp_assign_dict['ObjectName']:
-            if obj==grp:
-
-
     return output_dict
 
 def FrameElmSort(Model,Groups):
