@@ -4,15 +4,16 @@
 
 from ..constants import units
 from ..functions.helpers import select_groups, result_setup
+from typing import Union
 
 import sys
 
-def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
+def FrameJtForces(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
     """This function will extract the Frame Joint Forces for the given load cases,
     and groups.
 
     Variable Definitions:
-      Model       = SAP Model object defined initialized using SAP2000v22 (Object)
+      model       = SAP Model object defined initialized using SAP2000v22 (Object)
       LoadCases   = List of load cases for inclusion in output (Strings)
       Groups      = List of selection groups for inclusion in output (Strings)
       Results     = List of result data extracted from the SAP2000 Model
@@ -52,13 +53,13 @@ def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVC
     FldNms = ['NumberResults','Obj','Elm','PointElm','LoadCase','StepType','StepNum',
               'F1','F2','F3','M1','M2','M3','Xcoord','Ycoord','Zcoord']
 
-    ret = result_setup(model=Model,load_cases=LoadCases,Units=Units,
+    ret = result_setup(model=model,load_cases=LoadCases,Units=Units,
                        NLStatic=NLStatic,MSStatic=MSStatic,MVCombo=MVCombo)
 
     # Select all objects in specified groups
-    ret = select_groups(model=Model,groups=Groups)
+    ret = select_groups(model=model,groups=Groups)
     
-    output = Model.Results.FrameJointForce("",3)
+    output = model.Results.FrameJointForce("",3)
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
@@ -69,7 +70,7 @@ def FrameJtForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVC
     output_dict["Zcoord"] = []
 
     for elem in output_dict["PointElem"]:
-        [X,Y,Z,T] = Model.PointElm.GetCoordCartesian(elem)
+        [X,Y,Z,T] = model.PointElm.GetCoordCartesian(elem)
         output_dict["Xcoord"].append(X)
         output_dict["Ycoord"].append(Y)
         output_dict["Zcoord"].append(Z)
@@ -127,12 +128,21 @@ def FrameForces(Model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCom
 
     # Select all objects in specified groups
     ret = select_groups(model=Model,groups=Groups)
+
+    grp_assign_dict = dict(zip(['Group','ObjectType','ObjectName'],[[],[],[]]))
+    for grp in Groups:
+        grp_assign = Model.GroupDef.GetAssignments(grp)
+        grp_assign_dict['Group'].append([grp]*grp_assign[0])
+        grp_assign_dict['ObjectType'].append(grp_assign[1])
+        grp_assign_dict['ObjectName'].append(grp_assign[2])
        
     output = Model.Results.FrameForce("",3)
-    output_dict = {}
+    output_dict = dict(zip(FldNms,output))
 
-    for i, fldnm in enumerate(FldNms):
-        output_dict[fldnm] = output[i]
+    for obj in output_dict['Obj']:
+        for grp in grp_assign_dict['ObjectName']:
+            if obj==grp:
+
 
     return output_dict
 
