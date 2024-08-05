@@ -3,6 +3,7 @@
 
 from ..constants import units, sap_paths
 from ..functions.helpers import select_groups, result_setup
+from pandas import DataFrame, merge
 import math
 import sys
 
@@ -120,12 +121,17 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
-        output_dict[fldnm] = output[i]
+        try:
+            output_dict[fldnm] = output[i]
+        except:
+            continue
     
     return output_dict
 
 def Shell_Stress_Avg(rawResults,grp_by,data_val):
-    df_averaged = rawResults.groupby(grp_by)[data_val].mean().reset_indx()
+    df_averaged = rawResults.groupby(grp_by)[[data_val]].mean().reset_indx()
+    df_averaged = merge(df_averaged,rawResults[["PointElm",
+                                                         "Elm"]],on="PointElm")
 
     return df_averaged
 
