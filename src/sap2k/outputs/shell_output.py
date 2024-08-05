@@ -63,8 +63,8 @@ def W_A_Eq(M11, M22, M12, alpha=90):
 
     return result
 units
-def AreaJtForces(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
-    """This function will extract the Area Joint Forces for the given load cases,
+def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MVCombo=1):
+    """This function will extract the Area shell Forces at each node for the given load cases,
     and groups.
 
     Variable Definitions:
