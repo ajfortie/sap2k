@@ -120,7 +120,7 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
-        output_dict[fldnm] = list(output[i])
+        output_dict[fldnm] = output[i]
     
     return output_dict
 
