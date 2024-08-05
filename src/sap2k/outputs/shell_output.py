@@ -120,11 +120,16 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
-        output_dict[fldnm] = output[i]
+        output_dict[fldnm] = list(output[i])
     
     return output_dict
 
-def Shell_Stress_Avg(RawResults):
+def Shell_Stress_Avg(rawResults,grp_by,data_val):
+    df_averaged = rawResults.groupby(grp_by)[data_val].mean().reset_indx()
+
+    return df_averaged
+
+def Shell_Stress_Avg_old(RawResults):
     # This module will take an array of results and average the forces over
     # common area joints.
 
