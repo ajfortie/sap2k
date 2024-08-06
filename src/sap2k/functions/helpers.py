@@ -25,12 +25,12 @@ of valid units.")
 
     # Set Load Cases For Output
     if load_cases != None:
-        model.Results.Setup.DeselectAllCasesAndCombosForOutput()
+        ret=model.Results.Setup.DeselectAllCasesAndCombosForOutput()
+        print("Flag for Case claring is {}".format(ret))
         for itm in load_cases:
             ret = model.Results.Setup.SetCaseSelectedForOutput(itm)
             if ret != 0:
                 ret = model.Results.Setup.SetComboSelectedForOutput(itm)
-
     return ret
 
 def select_groups(model,groups=list):
