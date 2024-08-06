@@ -118,12 +118,10 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
     ret = select_groups(model=model,groups=Groups)
     
     output = model.Results.AreaForceShell("",3)
-    print(output)
     output_dict = {}
 
     for i, fldnm in enumerate(FldNms):
         output_dict[fldnm] = output[i]
-    print(output_dict)
     return output_dict
 
 def Shell_Stress_Avg(rawResults,grp_by,data_val):
