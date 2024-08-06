@@ -31,6 +31,8 @@ of valid units.")
             if ret != 0:
                 ret = model.Results.Setup.SetComboSelectedForOutput(itm)
 
+    return ret
+
 def select_groups(model,groups=list):
 
     ret = model.SelectObj.ClearSelection()

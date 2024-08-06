@@ -116,6 +116,7 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
 
     # Select all objects in specified groups
     ret = select_groups(model=model,groups=Groups)
+    print(ret)
     
     output = model.Results.AreaForceShell("",3)
     output_dict = {}
