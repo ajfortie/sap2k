@@ -17,8 +17,8 @@ Reference the Units.json file in the constants directory for list \
 of valid units.")
     
     # Validate LoadCases Type
-    if not hasattr(LoadCases, '__iter__') or isinstance(LoadCases,str):
-        LoadCases = [LoadCases]
+    if not hasattr(load_cases, '__iter__') or isinstance(load_cases,str):
+        load_cases = [load_cases]
 
     model.SetPresentUnits(Units)
 
