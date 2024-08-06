@@ -110,7 +110,7 @@ def AreaForceShell(model, LoadCases, Groups, Units=4, NLStatic=1, MSStatic=1, MV
               'F11','F22','F12','FMax','FMin','FAngle','FVM',
               'M11','M22','M12','MMax','MMin','MAngle',
               'V13','V23','VMax','VAngle','ret']
-
+    
     ret = result_setup(model=model,load_cases=LoadCases,Units=Units,
                        NLStatic=NLStatic,MSStatic=MSStatic,MVCombo=MVCombo)
 

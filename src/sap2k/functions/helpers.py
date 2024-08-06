@@ -16,6 +16,10 @@ def result_setup(model, load_cases=None, Units=4, NLStatic=1, MSStatic=1,
 Reference the Units.json file in the constants directory for list \
 of valid units.")
     
+    # Validate LoadCases Type
+    if not hasattr(LoadCases, '__iter__') or isinstance(LoadCases,str):
+        LoadCases = [LoadCases]
+
     model.SetPresentUnits(Units)
 
     # Set Result Options
@@ -26,7 +30,6 @@ of valid units.")
     # Set Load Cases For Output
     if load_cases != None:
         ret=model.Results.Setup.DeselectAllCasesAndCombosForOutput()
-        print("Flag for Case claring is {}".format(ret))
         for itm in load_cases:
             ret = model.Results.Setup.SetCaseSelectedForOutput(itm)
             if ret != 0:
